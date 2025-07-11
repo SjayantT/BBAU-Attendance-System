@@ -1,0 +1,63 @@
+<% layout("Layouts/boilerplate") %>
+<div class="container my-2">
+  <div class="box py-2 ">
+        <h2 class="mb-3 text-center bold">Details</h2>
+        <div class="details">
+            <p><b>Course:</b> <%- courseName %></p>
+            <p><b>Batch:</b> <%- batchName.slice(14,18) %></p>
+        </div>
+        <div class="details">
+            <p><b>Semester:</b> <%- semester %></p>
+        </div>
+        <div class="details">
+            <p><b>Subject:</b> <%- subject %></p>
+        </div>
+        <% const formattedDate = new Date(date).toLocaleDateString('en-GB'); %>
+        <div class="details">
+          <p><b>Date:</b> <%- formattedDate %> </p>
+        </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover text-center align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>S.No</th>
+          <th>Name</th>
+          <th>Roll No</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% students.forEach((student, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= student.name %></td>
+            <td><%= student.roll_no %></td>
+            <td>
+              <% if (student.status === 'Present') { %>
+                <span class="badge bg-success mt-1 mb-1">Present</span>
+              <% } else if (student.status === 'Absent') { %>
+                <span class="badge bg-danger mt-1 mb-1">Absent</span>
+              <% } else { %>
+                <span class="badge bg-secondary mt-1 mb-1">Not Marked</span>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="d-flex justify-content-center my-3">
+  <form action="/departments/<%= courseName %>/fetch-attendance/by-date/pdf" method="POST">
+    <input type="hidden" name="batch" value="<%= batchName %>">
+    <input type="hidden" name="semester" value="<%= semester %>">
+    <input type="hidden" name="subject" value="<%= subject %>">
+    <input type="hidden" name="date" value="<%= date %>">
+    <button type="submit " class="btn btn-danger mb-2">
+      <i style="font-size: 1rem;" class="bi bi-download"></i> Download PDF
+    </button>
+  </form>
+</div>
+

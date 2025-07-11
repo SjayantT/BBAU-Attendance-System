@@ -1,0 +1,16 @@
+<% layout("Layouts/boilerplate") %>
+<body>
+    <div class="card myCard mt-5" style="width: 40rem;">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Student Data</h4>
+            <p class="card-text"><b>Name: </b> <%- student.name %> &nbsp; <b>Course:</b>
+             <%-courseName %> </p>
+            <p class="card-text"><b>Batch: </b> <%- batchName %> &nbsp; <b>Roll No: </b> <%- student.roll_no %></p>
+            <p class="card-text"><b>Enrollment No: </b> <%- student.enrollment %></p>
+            <hr>
+            <h4 class="card-title mb-4">Attendance Data</h4>
+            <p class="notice mt-5"> No class is held for "<%- subject %>"</p>
+
+        </div>
+    </div>
+</body>

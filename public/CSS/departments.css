@@ -1,0 +1,93 @@
+/* Prevent unwanted horizontal scrolling */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+a{
+  text-decoration: none;
+}
+
+/* Card section container with spacing */
+.dept {
+  padding: 20px 15px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive Bootstrap-style columns */
+.col {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Card design */
+.card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+/* Hover effect */
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Card image */
+.card-img-top {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  object-fit: cover;
+}
+
+/* Card content */
+.card-body {
+  padding: 15px;
+  text-align: center;
+}
+
+/* Title inside the card */
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+/* Responsive spacing */
+@media (max-width: 767px) {
+  .dept {
+    padding: 15px 10px;
+  }
+
+  .card-body {
+    padding: 12px;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+}
+.fetch{
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+.mybtn{
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+}

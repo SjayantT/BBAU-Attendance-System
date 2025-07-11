@@ -1,0 +1,9 @@
+# Don't upload environment variables or secrets
+.env
+
+# Don't upload installed packages
+node_modules/
+
+# Optional: log files or temporary data
+*.log
+.DS_Store

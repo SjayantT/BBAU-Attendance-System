@@ -1,0 +1,89 @@
+<% layout("Layouts/boilerplate") %>
+
+<body class="bg-light">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form action="/departments/<%-courseName%>/fetch-attendance/result" method="POST" class="card p-4 shadow">
+          <h3 class="text-center mb-4">Fetch Attendance</h3>
+
+          <!-- Batch Dropdown -->
+          <div class="mb-3">
+            <label for="batch" class="form-label">Batch</label>
+            <select class="form-select" id="batch" name="batch" required>
+              <option value="">-- Select Batch --</option>
+              <% batches.forEach(batch => { %>
+                <% if(batch !== "faculties" && batch !== "subjects") { %>
+                  <option value="<%= batch %>"><%= batch.slice(8,18) %></option>
+                <% } %>
+              <% }); %>
+            </select>
+          </div>
+
+          <!-- Semester Dropdown (Static) -->
+          <div class="mb-3">
+            <label for="semester" class="form-label">Semester</label>
+            <select class="form-select" id="semester" name="semester" required>
+              <option value="">-- Select Semester --</option>
+              <% for(let i = 1; i <= 8; i++) { %>
+                <option value="<%=i%>">Semester <%= i %></option>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- Subject Dropdown (Dynamic) -->
+          <div class="mb-3">
+            <label for="subject" class="form-label">Subject</label>
+            <select class="form-select" id="subject" name="subject" required>
+              <option value="">-- Select Subject --</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Fetch Attendance</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const icon = document.getElementById("eyeIcon");
+        const isPassword = passwordInput.type === "password";
+
+        passwordInput.type = isPassword ? "text" : "password";
+        icon.classList.toggle("bi-eye-fill");
+        icon.classList.toggle("bi-eye-slash-fill");
+      }
+
+      // Inject data passed from backend
+      const semesterSubjects = <%-JSON.stringify(data)%>;
+
+      const semesterMap = {
+        "1": "First",
+        "2": "Second",
+        "3": "Third",
+        "4": "Fourth",
+        "5": "Fifth",
+        "6": "Sixth",
+        "7": "Seventh",
+        "8": "Eighth"
+      };
+
+      const semesterSelect = document.getElementById("semester");
+      const subjectSelect = document.getElementById("subject");
+
+      semesterSelect.addEventListener("change", function () {
+        const selectedKey = semesterMap[this.value];
+        const subjects = semesterSubjects[selectedKey] || [];
+
+        subjectSelect.innerHTML = '<option value="">-- Select Subject --</option>';
+        subjects.forEach(subject => {
+          const option = document.createElement("option");
+          option.value = subject;
+          option.textContent = subject;
+          subjectSelect.appendChild(option);
+        });
+      });
+  </script>
+</body>

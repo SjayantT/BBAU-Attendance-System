@@ -1,0 +1,26 @@
+.head{
+    margin: auto;
+    text-align: center;
+    padding: 20px 25px;
+    width: max-content;
+    margin-top: 2.5rem;
+}
+.head h1{
+    font-family: 'Kalam', cursive;
+    font-style: italic;
+    text-decoration: wavy;
+}
+.card{
+    margin: auto;   
+}
+.card img{
+    height: 15rem;
+}
+@media (max-width: 600px) {
+    .card{
+        max-width: 20rem;
+    }
+    .card img{
+        height:9rem;
+    }
+}

@@ -1,0 +1,80 @@
+<% layout("Layouts/boilerplate") %>
+<body class="bg-light">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form  action="/departments/<%-courseName%>/<%-batchName%>/students/attendance"  id="faculty-form" class="card p-4 shadow" method="post">
+          <h3 class="text-center mb-4">Student Verification</h3>
+
+          <div class="mb-3">
+            <label for="rollNo" class="form-label">Roll No</label>
+            <input type="text" class="form-control" id="rollNo" name="rollNo" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="enrollmentNo" class="form-label">Enrollment No</label>
+            <input type="text" class="form-control" id="enrollmentNo" name="enrollmentNo" placeholder="eg. Ac-001/23" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="semester" class="form-label">Semester</label>
+            <select class="form-select" id="semester" name="semester" required>
+              <option value="">-- Select Semester --</option>
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3">Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+              <option value="6">Semester 6</option>
+              <option value="7">Semester 7</option>
+              <option value="8">Semester 8</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="subject" class="form-label">Subject</label>
+            <select class="form-select" id="subject" name="subject" required>
+              <option value="">-- Select Subject --</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Verify & Proceed</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+      // Inject data passed from backend
+      const semesterSubjects = <%-JSON.stringify(data)%> ;
+      const semesterMap = {
+        "1": "First",
+        "2": "Second",
+        "3": "Third",
+        "4": "Fourth",
+        "5": "Fifth",
+        "6": "Sixth",
+        "7": "Seventh",
+        "8": "Eighth"
+      };
+
+      const semesterSelect = document.getElementById("semester");
+      const subjectSelect = document.getElementById("subject");
+
+      semesterSelect.addEventListener("change", function () {
+        const selectedKey = semesterMap[this.value];
+        const subjects = semesterSubjects[selectedKey] || [];
+
+        subjectSelect.innerHTML = '<option value="">-- Select Subject --</option>';
+        subjects.forEach(subject => {
+          const option = document.createElement("option");
+          option.value = subject;
+          option.textContent = subject;
+          subjectSelect.appendChild(option);
+        });
+      });
+  </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>

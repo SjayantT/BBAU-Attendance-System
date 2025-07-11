@@ -1,0 +1,28 @@
+<% layout("Layouts/boilerplate") %>
+<body>
+    <div class="card myCard mt-5" style="width: 40rem;">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Student Data</h4>
+            <p class="card-text"><b>Name: </b> <%- student.name %> &nbsp; <b>Course:</b>
+             <%-courseName %> </p>
+            <p class="card-text"><b>Batch: </b> <%- batchName %> &nbsp; <b>Roll No: </b> <%- student.roll_no %></p>
+            <p class="card-text"><b>Enrollment No: </b> <%- student.enrollment %></p>
+            <hr>
+            <h4 class="card-title mb-4">Attendance Data</h4>
+            <p class="card-text"><b>Semester: </b> <%- semester %> </p>
+            <p class="card-text"><b>Subject: </b> <%- subject %> </p>
+            <p class="card-text"><b>Total Classes: </b> <%- totalClasses %> </p>
+            <p class="card-text"><b>Total Present: </b> <%-presentCounts%> </p>
+            <p class="card-text"><b>Total Absent: </b> <%-absentCounts%> </p>
+
+            <% const presentPercentage = (presentCounts/ totalClasses)*100; %>
+            <% const Percentage = presentPercentage.toFixed(2); %>
+            <p class="card-text"><b>Present Percentage: </b> <%-Percentage%>% </p>
+            <% if(Percentage < 75){ %>
+                <p class="blink mt-5"> Please try to maintain your attendance percentage.</p>
+            <% } %>
+
+        </div>
+    </div>
+    <br>
+</body>

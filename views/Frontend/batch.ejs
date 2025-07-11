@@ -1,0 +1,29 @@
+<% layout("Layouts/boilerplate") %>
+<body>
+   <div class="head"><h1>Select Batch...</h1></div>
+   <div class="d-flex flex-column align-items-centre justify-content-start" style="min-height: 80vh;">
+      <div class="container">
+        <% data.forEach(batch => { %>
+          <% if(batch != "faculties" && batch!= "subjects") { %>
+            <div class="row justify-content-center mb-3">
+              <div class="col-md-6">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h4 class="card-title"><%- batch.slice(8,18) %></h4>
+                    <a href="/departments/<%-courseName%>/<%-batch%>/verify"><button type="button" class="btn btn-success m-0.5 mt-3">Mark Attendance</button></a>
+                    <a href="/departments/<%-courseName%>/<%-batch%>/students"><button type="button" class="btn btn-secondary m-0.5 mt-3">See Attendance</button></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        <% }); %>
+      </div>
+      <div class="fetch">
+            <a href="/departments/<%-courseName%>/fetch-attendance"><button type="button" class="btn mybtn btn-primary btn-lg">Fetch Attendance</button></a>
+      </div>
+    </div>
+</body>
+
+
+

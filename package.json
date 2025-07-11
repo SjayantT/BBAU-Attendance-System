@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "ejs-mate": "^4.0.0",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "mongoose": "^8.14.0",
+    "moongoose": "^0.0.5",
+    "pdfkit": "^0.17.1",
+    "pdfkit-table": "^0.1.99"
+  },
+  "name": "bbau_attendance_system",
+  "version": "3.0.1",
+  "description": "It is a attendance system of BBAU Satellite Centre Amethi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "BBAU, Amethi",
+  "license": "ISC"
+}

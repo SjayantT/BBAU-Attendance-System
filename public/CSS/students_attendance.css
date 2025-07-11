@@ -1,0 +1,31 @@
+.myCard{
+    margin: auto;
+    margin-bottom: 2%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+}
+.myCard:hover{
+    transition: none;
+    transform: none;
+}
+.myCard h4{
+    text-decoration: underline;
+    font-weight: 600 !important;
+}
+.notice{
+    color: rgb(77, 138, 235);
+    font-size: 1.1rem;
+    font-weight: 600;
+    animation: blink 1.2s step-start infinite;
+}
+.blink {
+    color: rgb(77, 138, 235);
+    font-size: 1.1rem;
+    font-weight: 600;
+    animation: blink 1.2s step-start infinite;
+}
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}

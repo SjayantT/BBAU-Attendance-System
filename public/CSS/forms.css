@@ -1,0 +1,17 @@
+
+    .custom-input-group .form-control {
+      height: 40px; /* Match default Bootstrap height */
+    }
+
+    .custom-input-group .eye-toggle {
+      margin: 0;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .custom-input-group .eye-toggle i {
+      font-size: 1.1rem;
+    }

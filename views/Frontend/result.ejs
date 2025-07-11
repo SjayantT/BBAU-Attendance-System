@@ -1,0 +1,76 @@
+<% layout("Layouts/boilerplate") %>
+<body class="bg-light">
+  <div class="container py-2">
+    <div class="box py-2 ">
+        <h2 class="mb-2 text-center bold">Details</h2>
+        <div class="details">
+            <p><b>Course:</b> <%- courseName %></p>
+            <p><b>Batch:</b> <%- batchName.slice(14,18) %></p>
+        </div>
+        <div class="details">
+            <p><b>Semester:</b> <%- semester %></p>
+        </div>
+        <div class="details">
+            <p><b>Subject:</b> <%- subject %></p>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Name</th>
+            <th>Roll No</th>
+            <th>Total Class</th>
+            <th>Total Present</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% attendanceList.forEach((student) => { %>
+            <tr>
+              <td><%= student.name %></td>
+              <td><%= student.rollNo %></td>
+              <td><%= student.total %></td>
+              <td><%= student.present %></td>
+              <td><%= student.percentage %>%</td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="/departments/<%-courseName%>" class="btn btn-secondary">Go Back</a>
+      <form action="/departments/<%= courseName %>/fetch-attendance/pdf" method="POST" target="_blank">
+        <input type="hidden" name="batch" value="<%= batchName %>">
+        <input type="hidden" name="semester" value="<%= semester %>">
+        <input type="hidden" name="subject" value="<%= subject %>">
+        <button type="submit" class="btn btn-danger">
+          <i style="font-size: 1rem;" class="bi bi-download"></i> Download PDF
+        </button>
+      </form>
+      <br>
+      <hr>
+    </div>
+    <div class="head" style="font-size: 3rem;"><h1> Filter with specific date...</h1></div>
+      <div class="container my-5">
+        <div class="d-flex justify-content-center">
+          <form action="/departments/<%=courseName%>/fetch-attendance/by-date" method="POST" class="row g-3 align-items-end">
+            <div class="col-auto">
+              <label for="filterDate" class="form-label">Select Date</label>
+              <input type="date" class="form-control" id="filterDate" name="date" required>
+            </div>
+            <input type="hidden" name="batch" value="<%= batchName %>">
+            <input type="hidden" name="semester" value="<%= semester %>">
+            <input type="hidden" name="subject" value="<%= subject %>">
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    
+  </div>
+</body>

@@ -1,0 +1,72 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to right, #1e3a8a, #2563eb);
+    color: white;
+    padding: 20px 30px; /* Increased padding for a taller header */
+    text-align: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .header-left img,
+  .header-right img {
+    height: 150px;
+    /* Logo and Ambedkar image height */
+    width: auto;
+    border-radius: 15px;
+    object-fit: contain;
+  }
+
+  .header-center {
+    flex: 1;
+    padding: 0 10px;
+  }
+
+  .header-center h1 {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .header-center h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 8px 0;
+  }
+
+  .accreditation {
+    font-size: 16px;
+    font-style: italic;
+    color: #d1d5db;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 600px) {
+    header {
+      padding: 20px 12px; /* Adjusted padding for mobile */
+      gap: 6px;
+    }
+
+    .header-center h1 {
+      font-size: 18px;
+    }
+
+    .header-center h2 {
+      font-size: 16px;
+    }
+
+    .accreditation {
+      font-size: 12px;
+    }
+
+    .header-left img,
+    .header-right img {
+      height: 70px; /* Increased height for mobile */
+    }
+
+    .header-center {
+      padding: 0 6px;
+    }
+  }

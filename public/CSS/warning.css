@@ -1,0 +1,9 @@
+.alert{
+    text-align: center;
+    padding: 1.5rem 3rem 1.5rem 3rem;
+    border-radius: 1rem;
+    border: 0.5px solid rgb(232, 74, 74) !important;
+}
+.bi{
+    font-size: 2rem;
+}
