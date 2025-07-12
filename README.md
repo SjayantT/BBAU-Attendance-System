@@ -47,7 +47,7 @@ BBAU_Attendance_System/
 └── README.md
 
 
-# Developers:
+# Developer:
 
 **Sahil Jayant**
 📧 www.jayantsahil2054@gmail.com <br>
