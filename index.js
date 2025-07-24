@@ -81,7 +81,7 @@ async function startServer() {
 
         // this route is saving attendance data
         app.post("/departments/:course/:batch/:semester/:subject/submit-attendance", async (req, res) => {
-        const { course, batch, subject } = req.params;
+        const { course, batch,semester, subject } = req.params;
         const attendanceList = req.body.attendance;
         const today = new Date().toISOString().slice(0, 10);
 
@@ -144,7 +144,7 @@ async function startServer() {
             );
             }
 
-            res.json({ success: true, redirectUrl: `/departments/${course}/submitted` });
+            res.json({ success: true, redirectUrl: `/departments/${course}/${batch}/${semester}/${subject}/submitted` });
 
         } catch (err) {
             console.error("Submit Error:", err);
@@ -152,10 +152,62 @@ async function startServer() {
         }
         });
 
-        app.get("/departments/:course/submitted", (req, res) => {
+        app.get("/departments/:course/:batch/:semester/:subject/submitted", (req, res) => {
             const courseName = req.params.course.trim();
-            res.render("./Frontend/submitted.ejs", {courseName});
+            const batchName = req.params.batch.trim();
+            const semester= req.params.batch.trim();
+            const subject = req.params.subject.trim();
+            res.render("./Frontend/submitted.ejs", {courseName, batchName,semester ,subject});
         });
+
+        app.get("/departments/:course/:batch/:semester/:subject/submitted/result", async (req, res) => {
+            const course = req.params.course.trim();
+            const batch = req.params.batch.trim();
+            const semester= req.params.semester.trim();
+            const subject = req.params.subject.trim();
+            const date = new Date().toISOString().slice(0, 10);
+            let hasUnmarked= false;
+            try {
+                await client.connect();
+                const db = client.db(course);
+                const studentCollection = db.collection(batch);
+                const students = await studentCollection.find().toArray();
+
+                const filtered = students.map(student => {
+                // Access subject data from Map
+                const subjData = student.subjects[subject];
+                if (!subjData || typeof subjData !== 'object') return null;
+
+                const isPresent = Array.isArray(subjData.presentDates) && subjData.presentDates.includes(date);
+                const isAbsent = Array.isArray(subjData.absentDates) && subjData.absentDates.includes(date);
+
+                let status= "Not Marked";
+                if(isPresent) status="Present";
+                else if(isAbsent) status= "Absent";
+                else hasUnmarked= true;
+
+                return {
+                    name: student.name,
+                    roll_no: student.roll_no,
+                    status: isPresent ? "Present" : isAbsent ? "Absent" : "Not Marked"
+                };
+                }).filter(Boolean); // remove null entries
+
+                if(hasUnmarked){
+                    const msg= `No attendance data found for "${subject}" on "${date}"!`;
+                    res.render("./Frontend/warning.ejs",{msg});
+                    return;
+                }
+
+                filtered.sort((a, b) => a.roll_no - b.roll_no);
+                res.render("./Frontend/fetch-by-date.ejs", {date, courseName:course, batchName: batch,semester, subject, students: filtered});
+
+            } catch (err) {
+                console.error(" Error filtering attendance by date:", err);
+                res.status(500).send("Error filtering attendance by date");
+            }
+        });
+        
 
         
         app.get("/departments/:course/:batch/students", async(req,res)=>{
