@@ -23,7 +23,7 @@ const studentSchema = new mongoose.Schema({
 });
 
 async function BCA_db() {
-    const BCA = await mongoose.createConnection("mongodb+srv://sahil_jayant0001:drrnkatiyar321A@cluster0.qe2zyph.mongodb.net/BCA?retryWrites=true&w=majority&appName=Cluster0");
+    const BCA = await mongoose.createConnection(process.env.BCA);
 
     const BCA_faculties = BCA.model("BCA_faculties", facultySchema, "faculties");
     const BCA_student2023 = BCA.model("BCA_student2023", studentSchema, "student_batch_2023");

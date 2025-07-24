@@ -15,7 +15,7 @@ app.use(express.json());
 
 require("dotenv").config();
 const{MongoClient}= require("mongodb");
-const url= "mongodb+srv://sahil_jayant0001:drrnkatiyar321A@cluster0.qe2zyph.mongodb.net/retryWrites=true&w=majority&appName=Cluster0";
+const url= process.env.uri;
 const client= new MongoClient(url);
 
 
