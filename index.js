@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const path = require("path");
 const ejsMate= require("ejs-mate");
 const BCA_db = require("./methods/BCA/schema");
@@ -15,7 +15,7 @@ app.use(express.json());
 
 require("dotenv").config();
 const{MongoClient}= require("mongodb");
-const url= process.env.uri;
+const url= "mongodb+srv://sahil_jayant0001:drrnkatiyar321A@cluster0.qe2zyph.mongodb.net/retryWrites=true&w=majority&appName=Cluster0";
 const client= new MongoClient(url);
 
 
@@ -80,58 +80,83 @@ async function startServer() {
         });
 
         // this route is saving attendance data
-        app.post("/departments/:course/:batch/:semester/:subject/submit-attendance", async(req,res)=>{
-            const courseName= req.params.course.trim();
-            const batchName= req.params.batch.trim();
-            const subject= req.params.subject.trim();
-            const attendanceList= req.body.attendance;
-            await client.connect();
-            const db= client.db(courseName);
-            const studentCollection= db.collection(batchName);
-            const today= new Date().toISOString().slice(0,10); // Get today's date in YYYY-MM-DD format
-            let skippedStudents=[]; 
-            for(let entry of attendanceList){
-                const {rollNo, status}=entry;
-                const roll= parseInt(rollNo);
-                // finding the student by roll number
-                const student= await studentCollection.findOne({roll_no:roll});
-                // checking if student or subject does not exist yet, or today's date not present in subject data, we will skip this student
-                const subjectData = student && student.subjects && student.subjects[subject];
-                const alreadyMarked= subjectData && (subjectData.presentDates?.includes(today) || subjectData.absentDates?.includes(today));
-                if(alreadyMarked){
-                    skippedStudents.push((roll));
-                    continue;
-                }
-                // building update query
-                const updateQuery= {
-                    $inc: {
-                        [`subjects.${subject}.totalClasses`]:1
-                    },
-                    $push:{}
-                };
-                if(status === "Present"){
-                    updateQuery.$inc[`subjects.${subject}.presentCount`]= 1;
-                    updateQuery.$push[`subjects.${subject}.presentDates`]= today;
-                } else{
-                    updateQuery.$inc[`subjects.${subject}.absentCount`]= 1;
-                    updateQuery.$push[`subjects.${subject}.absentDates`]= today;
-                }
+        app.post("/departments/:course/:batch/:semester/:subject/submit-attendance", async (req, res) => {
+        const { course, batch, subject } = req.params;
+        const attendanceList = req.body.attendance;
+        const today = new Date().toISOString().slice(0, 10);
 
+        try {
+            await client.connect();
+            const db = client.db(course);
+            const studentCollection = db.collection(batch);
+
+            for (let entry of attendanceList) {
+            const roll = parseInt(entry.rollNo);
+            const status = entry.status;
+
+            const student = await studentCollection.findOne({ roll_no: roll });
+            if (!student) continue;
+
+            const subjData = student.subjects?.[subject];
+
+            const isAlreadyPresent = subjData?.presentDates?.includes(today);
+            const isAlreadyAbsent = subjData?.absentDates?.includes(today);
+
+            // If already marked, remove old status
+            if (isAlreadyPresent || isAlreadyAbsent) {
+                const updateRemove = {
+                $pull: {
+                    [`subjects.${subject}.presentDates`]: today,
+                    [`subjects.${subject}.absentDates`]: today
+                },
+                $inc: {
+                    [`subjects.${subject}.presentCount`]: isAlreadyPresent ? -1 : 0,
+                    [`subjects.${subject}.absentCount`]: isAlreadyAbsent ? -1 : 0
+                }
+                };
+                await studentCollection.updateOne({ roll_no: roll }, updateRemove);
+            } else {
+                // Increment total only if new record
                 await studentCollection.updateOne(
-                    {roll_no: roll},
-                    updateQuery,
-                    {upsert: true}
+                { roll_no: roll },
+                { $inc: { [`subjects.${subject}.totalClasses`]: 1 } }
                 );
             }
-            res.json({
-                    redirectUrl: `/departments/${courseName}/submitted`,
-                    skipped: skippedStudents.length
-                }); 
+
+            // Push new status
+            const updateAdd = {
+                $push: {},
+                $inc: {}
+            };
+
+            if (status === "Present") {
+                updateAdd.$push[`subjects.${subject}.presentDates`] = today;
+                updateAdd.$inc[`subjects.${subject}.presentCount`] = 1;
+            } else {
+                updateAdd.$push[`subjects.${subject}.absentDates`] = today;
+                updateAdd.$inc[`subjects.${subject}.absentCount`] = 1;
+            }
+
+            await studentCollection.updateOne(
+                { roll_no: roll },
+                updateAdd,
+                { upsert: true }
+            );
+            }
+
+            res.json({ success: true, redirectUrl: `/departments/${course}/submitted` });
+
+        } catch (err) {
+            console.error("Submit Error:", err);
+            res.status(500).json({ success: false, error: "Error submitting attendance" });
+        }
         });
-        app.get("/departments/:course/submitted",async(req,res)=>{
+
+        app.get("/departments/:course/submitted", (req, res) => {
             const courseName = req.params.course.trim();
-            res.render("./Frontend/submitted.ejs",{courseName});
+            res.render("./Frontend/submitted.ejs", {courseName});
         });
+
         
         app.get("/departments/:course/:batch/students", async(req,res)=>{
             const courseName= req.params.course.trim();

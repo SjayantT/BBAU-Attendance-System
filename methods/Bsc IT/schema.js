@@ -22,7 +22,7 @@ const studentSchema = new mongoose.Schema({
 });
 
 async function IT_db() {
-    const IT = await mongoose.createConnection(process.env.IT);
+    const IT = await mongoose.createConnection("mongodb+srv://sahil_jayant0001:drrnkatiyar321A@cluster0.qe2zyph.mongodb.net/IT?retryWrites=true&w=majority&appName=Cluster0");
 
     const IT_faculties = IT.model("IT_faculties", facultySchema, "faculties");
     const IT_student2023 = IT.model("IT_student2023", studentSchema, "student_batch_2023");

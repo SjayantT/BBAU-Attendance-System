@@ -1,28 +1,30 @@
 <% layout("Layouts/boilerplate") %>
 <body class="bg-light">
-
-  <div class="box py-2 mt-3">
-    <h2 class="mb-4 text-center bold">Details</h2>
-    <div class="details">
-      <p><b>Course:</b> <%- courseName %></p>
-      <p><b>Batch:</b> <%- batchName.slice(14,18) %></p>
-    </div>
-    <div class="details">
-      <p><b>Semester:</b> <%- semester %></p>
-    </div>
-    <div class="details">
-      <p><b>Subject:</b> <%- subject %></p>
-    </div>
-    <div class="details">
-      <p><b>Faculty:</b> <%- facultyName %></p>
-    </div>
+  <div class="box py-2 ">
+        <h2 class="mb-2 text-center bold">Details</h2>
+        <div class="details">
+            <p><b>Course:</b> <%- courseName %></p>
+            <p><b>Batch:</b> <%- batchName.slice(14,18) %></p>
+        </div>
+        <div class="details">
+            <p><b>Semester:</b> <%- semester %></p>
+        </div>
+        <div class="details">
+            <p><b>Subject:</b> <%- subject %></p>
+        </div>
+        <div class="details">
+            <p><b>Faculty:</b> <%- facultyName %></p>
+        </div>
   </div>
 
   <div class="container-fluid mt-3">
-    <h2 class="mb-4 text-center bold">Mark Attendance</h2>
-
     <form id="attendance-form">
       <div class="table-responsive">
+        <div class="form-check form-switch d-flex justify-content-center mb-3">
+          <input class="form-check-input" type="checkbox" id="markAllPresent" onchange="toggleAllPresent(this)">
+          <label class="form-check-label ms-2" for="markAllPresent">Mark All Present</label>
+        </div>
+
         <table class="table table-bordered align-middle">
           <thead class="table-dark">
             <tr>
@@ -33,117 +35,102 @@
             </tr>
           </thead>
           <tbody>
-            <% let count = 1; %>
-            <% for (let student of data) { %>
+            <% let count = 1; const today = new Date().toISOString().slice(0, 10); %>
+            <% data.forEach(student => {
+                const subj = student.subjects?.[subject] || {};
+                const isPresent = subj.presentDates?.includes(today);
+                const isAbsent = subj.absentDates?.includes(today);
+            %>
               <tr>
-                <td><%- count++ %></td>
-                <td><%- student.name %></td>
-                <td><%- student.roll_no %></td>
+                <td><%= count++ %></td>
+                <td><%= student.name %></td>
+                <td><%= student.roll_no %></td>
                 <td>
                   <div class="btn-group">
-                    <button type="button" class="btn btn-toggle present" onclick="markStatus(this)">Present</button>
-                    <button type="button" class="btn btn-toggle absent" onclick="markStatus(this)">Absent</button>
+                    <button type="button" class="btn btn-toggle present <%= isPresent ? 'active' : '' %>" onclick="markStatus(this)">Present</button>
+                    <button type="button" class="btn btn-toggle absent <%= isAbsent ? 'active' : '' %>" onclick="markStatus(this)">Absent</button>
                   </div>
                 </td>
               </tr>
-            <% } %>
+            <% }); %>
           </tbody>
         </table>
       </div>
 
-      <div class="text-center mt-4">
+      <div class="text-center mt-3">
         <button type="submit" class="btn btn-success px-4">Submit Attendance</button>
       </div>
-    </form>
-    <br><br>
+    </form> <br>
   </div>
 
-  <!-- Toggle Button Script -->
   <script>
     function markStatus(button) {
       const group = button.closest(".btn-group");
-      const buttons = group.querySelectorAll(".btn-toggle");
-
-      buttons.forEach(btn => btn.classList.remove("active"));
+      group.querySelectorAll(".btn-toggle").forEach(btn => btn.classList.remove("active"));
       button.classList.add("active");
     }
-  </script>
 
-  <!-- Attendance Submit Script -->
-  <script>
     document.getElementById("attendance-form").addEventListener("submit", function (e) {
       e.preventDefault();
-
       const attendanceData = [];
-      const unmarkedRolls = [];
 
-      document.querySelectorAll("tbody tr").forEach((row) => {
+      document.querySelectorAll("tbody tr").forEach(row => {
         const name = row.cells[1].textContent.trim();
         const rollNo = row.cells[2].textContent.trim();
         const presentBtn = row.querySelector(".btn-toggle.present");
         const absentBtn = row.querySelector(".btn-toggle.absent");
 
-        const isPresentActive = presentBtn.classList.contains("active");
-        const isAbsentActive = absentBtn.classList.contains("active");
+        const isPresent = presentBtn.classList.contains("active");
+        const isAbsent = absentBtn.classList.contains("active");
 
-        if (!isPresentActive && !isAbsentActive) {
-          unmarkedRolls.push(rollNo);
-        } else {
-          const status = isPresentActive ? "Present" : "Absent";
-          attendanceData.push({ name, rollNo, status });
+        if (isPresent || isAbsent) {
+          attendanceData.push({
+            name,
+            rollNo,
+            status: isPresent ? "Present" : "Absent"
+          });
         }
       });
 
-      if (unmarkedRolls.length > 0) {
-        alert("Please mark attendance for unmarked students before submitting.");
-        return;
-      }
-
-      const course = "<%- courseName %>";
-      const batch = "<%- batchName %>";
-      const semester = "<%- semester %>";
-      const subject = "<%- subject %>";
-
-      fetch(`/departments/${course}/${batch}/${semester}/${subject}/submit-attendance`, {
+      fetch(`/departments/<%= courseName %>/<%= batchName %>/<%= semester %>/<%= subject %>/submit-attendance`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ attendance: attendanceData })
       })
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to mark attendance");
-          return res.json();
-        })
-        .then((data) => {
-          if (data.skipped && data.skipped.length > 0) {
-            alert("Skipped (already marked today): " + data.skipped.join(", "));
-          }
-
-          // ✅ Redirect user
-          if (data.redirectUrl) {
-            window.location.href = data.redirectUrl;
-          }
-      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.redirectUrl) {
+          window.location.href = data.redirectUrl;
+        } else {
+          alert("Error occurred.");
+        }
+      });
     });
+    function toggleAllPresent(checkbox) {
+      const rows = document.querySelectorAll("tbody tr");
+
+      rows.forEach(row => {
+        const presentBtn = row.querySelector(".btn-toggle.present");
+        const absentBtn = row.querySelector(".btn-toggle.absent");
+
+        // Remove existing active state
+        presentBtn.classList.remove("active");
+        absentBtn.classList.remove("active");
+
+        if (checkbox.checked) {
+          // Mark as Present
+          presentBtn.classList.add("active");
+        }
+      });
+    }
+
+
   </script>
 
-  <!-- Optional: CSS for Toggle Buttons -->
   <style>
-    .btn-toggle.present.active {
-      background-color: #198754;
-      color: white;
-    }
-
-    .btn-toggle.absent.active {
-      background-color: #dc3545;
-      color: white;
-    }
-
-    .btn-toggle {
-      background-color: #f8f9fa;
-      border: 1px solid #ced4da;
-    }
+    .btn-toggle.present.active { background-color: #198754; color: white; }
+    .btn-toggle.absent.active { background-color: #dc3545; color: white; }
+    .btn-toggle { background-color: #f8f9fa; border: 1px solid #ced4da; }
   </style>
 
 </body>
