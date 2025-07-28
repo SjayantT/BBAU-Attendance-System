@@ -1,73 +1,62 @@
 <div class="container">
     <div id="loader">
-      <div class="infinity-loader">
-        <svg viewBox="0 0 200 100">
-          <path
-            d="M30,50 C30,20 70,20 100,50 C130,80 170,80 170,50 C170,20 130,20 100,50 C70,80 30,80 30,50"
-            pathLength="1"/>
-        </svg>
+        <div class="circle-loader"></div>
     </div>
 </div>
 
-
 <style>
-      #loader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(255, 255, 255, 0.85);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        backdrop-filter: blur(3px);
-        transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-      }
-      #loader.hidden {
-        opacity: 0;
-        visibility: hidden;
-      }
-      .infinity-loader svg {
-        width: 120px;
-        height: 60px;
-      }
-      .infinity-loader path {
-        stroke: #000;
-        stroke-width: 4;
-        fill: none;
-        stroke-linecap: round;
-        stroke-dasharray: 1;
-        stroke-dashoffset: 1;
-        animation: drawInfinity 1.5s linear infinite;
+    /* Fullscreen Loader */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    /* Hidden state after loading */
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Circle Loader */
+    .circle-loader {
+      width: 60px;
+      height: 60px;
+      border: 6px solid #cce5ff;
+      border-top: 6px solid #007bff; /* Blue color */
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Spin Animation */
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
       }
 
-      @keyframes drawInfinity {
-        0% {
-          stroke-dashoffset: 1;
-        }
-        100% {
-          stroke-dashoffset: 0;
-        }
+      100% {
+        transform: rotate(360deg);
       }
-      .blur {
-        filter: blur(3px);
-        pointer-events: none;
-      }
-    </style>
+    }
 
+    /* Sample content */
+    body.loaded-content {
+      font-family: sans-serif;
+      padding: 2rem;
+      text-align: center;
+    }
+</style>
 
-<script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const loader = document.getElementById("loader");
-        const container = document.querySelector(".container");
-
-        container.classList.add("blur");
-        setTimeout(() => {
-          loader.classList.add("hidden");
-          container.classList.remove("blur");
-        }, 3000);
-      });
+ <script>
+    window.addEventListener("load", function () {
+      document.getElementById("loader").classList.add("hidden");
+    });
 </script>
-
