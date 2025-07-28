@@ -58,3 +58,16 @@
     </style>
 
 
+<script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const loader = document.getElementById("loader");
+        const container = document.querySelector(".container");
+
+        container.classList.add("blur");
+        setTimeout(() => {
+          loader.classList.add("hidden");
+          container.classList.remove("blur");
+        }, 3000);
+      });
+</script>
+
