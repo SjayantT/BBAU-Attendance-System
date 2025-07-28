@@ -5,6 +5,17 @@
 </div>
 
 <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
     /* Fullscreen Loader */
     #loader {
       position: fixed;
@@ -12,7 +23,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -20,40 +31,35 @@
       transition: opacity 0.5s ease, visibility 0.5s ease;
     }
 
-    /* Hidden state after loading */
     #loader.hidden {
       opacity: 0;
       visibility: hidden;
     }
 
-    /* Circle Loader */
+    /* Circular blue spinner */
     .circle-loader {
       width: 60px;
       height: 60px;
-      border: 6px solid #cce5ff;
-      border-top: 6px solid #007bff; /* Blue color */
+      border: 6px solid #e0e0e0;
+      border-top: 6px solid #007bff;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
 
-    /* Spin Animation */
     @keyframes spin {
       0% {
         transform: rotate(0deg);
       }
-
       100% {
         transform: rotate(360deg);
       }
     }
 
-    /* Sample content */
-    body.loaded-content {
-      font-family: sans-serif;
+    .loaded-content {
       padding: 2rem;
       text-align: center;
     }
-</style>
+  </style>
 
  <script>
     window.addEventListener("load", function () {
