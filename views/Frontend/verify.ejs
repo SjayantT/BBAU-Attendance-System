@@ -3,13 +3,12 @@
   <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <form  action="/departments/<%-courseName%>/<%-batchName%>/verify/attendance"  id="faculty-form" class="card p-4 shadow" method="post" novalidate>
+        <form  action="/departments/<%-courseName%>/<%-batchName%>/verify/attendance"  id="faculty-form" class="card p-4 shadow" method="post">
           <h3 class="text-center mb-4">Faculty Verification</h3>
 
           <div class="mb-3">
             <label for="facultyId" class="form-label">Faculty ID</label>
             <input type="text" class="form-control" id="facultyId" name="facultyId" required>
-            <div class="invalid-feedback"> Please enter Faculty Id! </div>
           </div>
 
           <div class="mb-3">
@@ -25,7 +24,6 @@
               <option value="7">Semester 7</option>
               <option value="8">Semester 8</option>
             </select>
-            <div class="invalid-feedback"> Please select a valid semester! </div>
           </div>
 
           <div class="mb-3">
@@ -33,7 +31,6 @@
             <select class="form-select" id="subject" name="subject" required>
               <option value="">-- Select Subject --</option>
             </select>
-            <div class="invalid-feedback"> Please select a valid subject! </div>
           </div>
           <div class="mb-3">
             <label for="password" class="form-label"> Password</label>
@@ -43,7 +40,6 @@
                 <i class="bi bi-eye-fill"></i>
               </span>
             </div>
-            <div class="invalid-feedback"> Please enter your password! </div>
           </div>
 
           <a href="/departments/<%-courseName%>/<%-batchName%>/changePassword" class="mb-2"  style="text-decoration: none; text-align: right; font-size: 15px;">Change Password! &nbsp;</a>
@@ -52,7 +48,7 @@
       </div>
     </div>
   </div>
-  <script src="/public/js/script.js"></script>
+
   <script>
     
       function togglePassword(span) {
